@@ -1,9 +1,6 @@
-// Import the functions you need from the SDKs you need
-import { initializeApp } from "firebase/app";
-import { getAuth, GoogleAuthProvider, signInWithPopup, signOut } from 'firebase/auth'; 
-let analytics; // Declare analytics variable
+import { initializeApp } from 'firebase/app';
+import { getAuth, GoogleAuthProvider, signInWithPopup, signOut } from 'firebase/auth'; // Import getAuth stuff
 
-// Your web app's Firebase configuration
 const firebaseConfig = {
   apiKey: "AIzaSyCHdf8tVDVOtTazjvC0h1PyKwqNifWfqww",
   authDomain: "trackmysci.firebaseapp.com",
@@ -17,10 +14,13 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 
-// Conditionally initialize Firebase Analytics if running in the browser
-if (typeof window !== "undefined") {
-  const { getAnalytics } = await import("firebase/analytics");
-  analytics = getAnalytics(app);
+// Only initialize Analytics if it's supported in the environment
+if (typeof window !== 'undefined') {
+  import('firebase/analytics').then(({ getAnalytics }) => {
+    getAnalytics(app);
+  }).catch((error) => {
+    console.log('Analytics not supported:', error);
+  });
 }
 
 // Initialize Firebase Authentication and get a reference to the service
@@ -35,5 +35,3 @@ export const loginWithGoogle = () => {
 export const logout = () => {
   return signOut(auth);
 };
-
-export { analytics }; // Export analytics if you need it elsewhere
